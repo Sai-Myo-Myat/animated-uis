@@ -1,5 +1,8 @@
 import gsap from "gsap";
 import { useEffect, useRef, useState } from "react";
+import GalleryList from "../gallery-list";
+import { GalleryProvider } from "../../contexts/gallery-context";
+import FilterBar from "../filter-bar";
 
 const Gallery = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,14 +26,15 @@ const Gallery = () => {
   }, [setOpen]);
 
   return (
-    <div
-      ref={containerRef}
-      className="flex flex-col items-center justify-center h-[80vh]"
-    >
+    <div ref={containerRef} className="w-full min-h-[80vh]">
       {open && (
         <>
-          <h1 className="text-4xl font-bold mb-4 text-blue-900">Gallery</h1>
-          <p className="text-lg text-gray-500">This is Gallery page.</p>
+          <GalleryProvider>
+            <div className="flex gap">
+              <FilterBar />
+              <GalleryList />
+            </div>
+          </GalleryProvider>
         </>
       )}
     </div>

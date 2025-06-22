@@ -51,15 +51,15 @@ const Home = () => {
               Welcome Home!
             </h1>
             <p className="text-lg text-gray-700">
-              This is the home page of your animated UI project.
+              This is the home page of my animated UI project.
             </p>
           </div>
           <p
             ref={buttonRef}
-            className="fixed bottom-14 right-11 z-50 text-white"
+            className="fixed bottom-14 right-10 z-50 text-white"
             onClick={handleClick}
           >
-            view collection
+            view collections
           </p>
         </>
       )}

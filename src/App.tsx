@@ -11,15 +11,13 @@ const App: React.FC = () => (
     <NavigationProvider>
       <div className="min-h-screen w-[100vw] overflow-x-hidden">
         {/* Top navigation bar */}
-        <nav className="p-4">
-          <Link
-            to="/"
-            className="text-blue-600 hover:underline font-medium text-lg"
-          >
-            Fluffy HUGS
-          </Link>
-        </nav>
-        <main className="w-screen overflow-x-hidden relative p-4">
+        <Link
+          to="/"
+          className="text-blue-600 hover:underline font-bold text-4xl fixed left-10 top-4 z-50"
+        >
+          Fluffy HUGS
+        </Link>
+        <main className="min-w-screen min-h-screen overflow-x-hidden relative">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/gallery" element={<Gallery />} />
