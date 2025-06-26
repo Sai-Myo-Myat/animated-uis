@@ -1,5 +1,6 @@
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const HomeSession = () => {
@@ -10,36 +11,37 @@ const HomeSession = () => {
 
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (containerRef.current) {
-        gsap.fromTo(
-          containerRef.current,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: 0.5,
-            delay: 0.5,
-            onComplete: () => setOpen(true),
-          }
-        );
-      }
-    }, 0);
+  useGSAP(() => {
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.5,
+          delay: 0.5,
+          onComplete: () => setOpen(true),
+        }
+      );
+    }
   }, [setOpen]);
 
   const handleClick = useCallback(() => {
-    setTimeout(() => {
-      if (containerRef.current) {
-        gsap.fromTo(
-          containerRef.current,
-          {
-            opacity: 1,
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        {
+          opacity: 1,
+        },
+        {
+          opacity: 0,
+          duration: 0.3,
+          onComplete: () => {
+            navigate("/gallery");
           },
-          { opacity: 0, duration: 0.3 }
-        );
-      }
-    }, 0);
-    navigate("/gallery");
+        }
+      );
+    }
   }, [navigate]);
 
   return (
