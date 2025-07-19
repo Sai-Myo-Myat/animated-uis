@@ -1,10 +1,13 @@
-import HomeSession from "../sessions/hero-session";
+import Bagan from "../sessions/bagan";
+import Hero from "../sessions/hero";
+import Inle from "../sessions/inle";
 
 const Home = () => {
   return (
     <>
-      <HomeSession />
-      <div className="w-screen h-screen bg-red-500"></div>
+      <Hero />
+      <Bagan />
+      <Inle />
     </>
   );
 };
