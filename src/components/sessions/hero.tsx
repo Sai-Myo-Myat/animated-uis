@@ -2,13 +2,15 @@ import gsap from "gsap";
 import Session from "../sessions/session";
 import { SplitText, ScrollTrigger } from "gsap/all";
 import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
 const Hero = () => {
   const sessionRef = useRef<HTMLDivElement>(null);
   const baganRef = useRef<HTMLDivElement>(null);
+
+  const [displayBoxes, setDisplsyBoxes] = useState(false);
 
   useGSAP(() => {
     const tl = gsap.timeline();
@@ -36,21 +38,35 @@ const Hero = () => {
           opacity: 0,
           scrollTrigger: {
             trigger: sessionRef.current,
-            start: "top top",
+            start: "top 50",
             end: "bottom top",
             scrub: true,
             pin: true,
+            markers: true,
+            id: "yarngon",
           },
         })
         .to(baganRef.current, {
           opacity: 1,
           scrollTrigger: {
             trigger: baganRef.current,
-            start: "top top",
-            end: "bottom top",
+            start: "top 100",
+            end: "center top",
             scrub: true,
             pin: true,
+            // onUpdate: (self) => {
+            //   const progress = self.progress.toFixed(1);
+            //   if (progress === "0.3") {
+            //     setDisplsyBoxes(true);
+            //   }
+            // },
+            onEnterBack: () => setDisplsyBoxes(true),
+            onLeave: () => setDisplsyBoxes(false),
+            onLeaveBack: () => setDisplsyBoxes(false),
+            markers: true,
+            id: "bagan",
           },
+          onComplete: () => setDisplsyBoxes(true),
         });
     }
   }, []);
@@ -82,9 +98,27 @@ const Hero = () => {
           src="/bagan.jpg"
           className="object-cover object-center w-full h-full"
         />
+        {displayBoxes && <Boxes baganRef={baganRef} />}
       </Session>
+      {/* <div className="box absolute top-1/2 left-2/3 w-20 h-20 bg-green-700"></div> */}
+      {/* <div className="box absolute top-1/2 left-3/5 w-20 h-20 bg-purple-700"></div> */}
     </div>
   );
+};
+
+const Boxes = ({ baganRef }) => {
+  useGSAP(() => {
+    gsap.to(".box", {
+      top: 50,
+      scrollTrigger: {
+        trigger: ".box",
+        toggleActions: "restart none none none",
+        markers: true,
+        id: "box",
+      },
+    });
+  }, []);
+  return <div className="box absolute -top-96 w-20 h-20 bg-red-700"></div>;
 };
 
 export default Hero;
