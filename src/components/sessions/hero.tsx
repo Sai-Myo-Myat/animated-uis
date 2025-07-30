@@ -1,24 +1,22 @@
+import { useRef } from "react";
 import gsap from "gsap";
-import Session from "../sessions/session";
 import { SplitText, ScrollTrigger } from "gsap/all";
 import { useGSAP } from "@gsap/react";
-import { useRef, useState } from "react";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
-const Hero = () => {
-  const sessionRef = useRef<HTMLDivElement>(null);
-  const baganRef = useRef<HTMLDivElement>(null);
-
-  const [displayBoxes, setDisplsyBoxes] = useState(false);
+export default function Hero() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useGSAP(() => {
-    const tl = gsap.timeline();
+    const textTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".content",
+        toggleActions: "restart none restart none",
+      },
+    });
     const split = SplitText.create(".title");
-    tl.from(".image", {
-      opacity: 0,
-      ease: "bounce",
-    })
+    textTl
       .from(split.chars, {
         y: 150,
         opacity: 0,
@@ -30,59 +28,51 @@ const Hero = () => {
         opacity: 0,
         y: 20,
       });
-    // Fade out Session on scroll
-    if (sessionRef.current && baganRef.current) {
-      const fadeTl = gsap.timeline();
-      fadeTl
-        .to(sessionRef.current, {
-          opacity: 0,
-          scrollTrigger: {
-            trigger: sessionRef.current,
-            start: "top 50",
-            end: "bottom top",
-            scrub: true,
-            pin: true,
-            markers: true,
-            id: "yarngon",
-          },
-        })
-        .to(baganRef.current, {
+  }, []);
+
+  useGSAP(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".hero-section",
+          start: "top top",
+          end: "+=200%", // controls scroll distance
+          scrub: true,
+          pin: true,
+        },
+      });
+
+      tl.to(".yangon", { opacity: 0, duration: 1 });
+      tl.to(".content", { opacity: 0, duration: 1 }, "-=0.5");
+      tl.to(".bagan", { opacity: 1, duration: 1 }, "<");
+
+      tl.to(
+        ".box",
+        {
+          y: 0,
           opacity: 1,
-          scrollTrigger: {
-            trigger: baganRef.current,
-            start: "top 100",
-            end: "center top",
-            scrub: true,
-            pin: true,
-            // onUpdate: (self) => {
-            //   const progress = self.progress.toFixed(1);
-            //   if (progress === "0.3") {
-            //     setDisplsyBoxes(true);
-            //   }
-            // },
-            onEnterBack: () => setDisplsyBoxes(true),
-            onLeave: () => setDisplsyBoxes(false),
-            onLeaveBack: () => setDisplsyBoxes(false),
-            markers: true,
-            id: "bagan",
-          },
-          onComplete: () => setDisplsyBoxes(true),
-        });
-    }
+          duration: 0.6,
+          stagger: 0.2,
+          ease: "bounce.out",
+          marker: true,
+        },
+        "-=0.3"
+      );
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
-    <div>
-      <Session
-        ref={sessionRef}
-        className="relative inset-0 flex flex-col items-center justify-center"
-      >
-        <div className="absolute w-full h-full bg-black top-0 left-0 opacity-70" />
+    <div ref={containerRef} className="relative w-full">
+      <section className="hero-section h-screen flex items-center justify-center relative bg-black overflow-hidden">
         <img
           src="/yangon.jpg"
-          className="image object-cover object-center w-full h-full"
+          alt="Image 1"
+          className="yangon absolute w-full h-full opacity-100 transition-opacity duration-500 object-cover"
         />
-        <div className="absolute flex flex-col justify-center items-center">
+        <div className="absolute w-full h-full bg-[rgba(0,0,0,.5)]"></div>
+        <div className="absolute content flex flex-col justify-center items-center">
           <h1 className="title font-bold text-center text-5xl">
             "Travelling In Myanmar"
           </h1>
@@ -91,34 +81,22 @@ const Hero = () => {
             Wonders
           </p>
         </div>
-      </Session>
-      <Session ref={baganRef} className="absolute inset-0 opacity-0">
-        <div className="absolute w-full h-full bg-black top-0 left-0 opacity-45" />
         <img
           src="/bagan.jpg"
-          className="object-cover object-center w-full h-full"
+          alt="Image 2"
+          className="bagan absolute w-full h-full opacity-0 transition-opacity duration-500 object-cover"
         />
-        {displayBoxes && <Boxes baganRef={baganRef} />}
-      </Session>
-      {/* <div className="box absolute top-1/2 left-2/3 w-20 h-20 bg-green-700"></div> */}
-      {/* <div className="box absolute top-1/2 left-3/5 w-20 h-20 bg-purple-700"></div> */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-around gap-4 items-center">
+          {[1, 2, 3].map((n) => (
+            <div
+              key={n}
+              className="box w-40 h-20 bg-white text-black font-bold flex items-center justify-center opacity-0 -translate-y-32"
+            >
+              Block {n}
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
-};
-
-const Boxes = ({ baganRef }) => {
-  useGSAP(() => {
-    gsap.to(".box", {
-      top: 50,
-      scrollTrigger: {
-        trigger: ".box",
-        toggleActions: "restart none none none",
-        markers: true,
-        id: "box",
-      },
-    });
-  }, []);
-  return <div className="box absolute -top-96 w-20 h-20 bg-red-700"></div>;
-};
-
-export default Hero;
+}
