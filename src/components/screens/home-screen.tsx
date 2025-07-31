@@ -1,11 +1,10 @@
 import Hero from "../sessions/hero";
-import Inle from "../sessions/inle";
 
 const Home = () => {
   return (
     <>
       <Hero />
-      <Inle />
+      <section className="h-screen bg-red-600"></section>
     </>
   );
 };

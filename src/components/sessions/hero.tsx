@@ -34,30 +34,26 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: ".hero-section",
+          trigger: containerRef.current,
           start: "top top",
           end: "+=200%", // controls scroll distance
           scrub: true,
           pin: true,
+          pinSpacing: false,
         },
       });
 
       tl.to(".yangon", { opacity: 0, duration: 1 });
-      tl.to(".content", { opacity: 0, duration: 1 }, "-=0.5");
+      tl.to(".content", { opacity: 0, duration: 1 }, "=");
       tl.to(".bagan", { opacity: 1, duration: 1 }, "<");
-
       tl.to(
-        ".box",
+        ".inle",
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.2,
-          ease: "bounce.out",
-          marker: true,
+          y: "-100%",
         },
-        "-=0.3"
+        ">=0.5"
       );
+      tl.to(".bagan", { opacity: 0 }, "-=0.5");
     }, containerRef);
 
     return () => ctx.revert();
@@ -65,11 +61,11 @@ export default function Hero() {
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <section className="hero-section h-screen flex items-center justify-center relative bg-black overflow-hidden">
+      <section className="yangon relative opacity-100 transition-opacity duration-500  h-screen flex items-center justify-center bg-black">
         <img
           src="/yangon.jpg"
-          alt="Image 1"
-          className="yangon absolute w-full h-full opacity-100 transition-opacity duration-500 object-cover"
+          alt="Yangon Background"
+          className="object-cover"
         />
         <div className="absolute w-full h-full bg-[rgba(0,0,0,.5)]"></div>
         <div className="absolute content flex flex-col justify-center items-center">
@@ -81,22 +77,11 @@ export default function Hero() {
             Wonders
           </p>
         </div>
-        <img
-          src="/bagan.jpg"
-          alt="Image 2"
-          className="bagan absolute w-full h-full opacity-0 transition-opacity duration-500 object-cover"
-        />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex justify-around gap-4 items-center">
-          {[1, 2, 3].map((n) => (
-            <div
-              key={n}
-              className="box w-40 h-20 bg-white text-black font-bold flex items-center justify-center opacity-0 -translate-y-32"
-            >
-              Block {n}
-            </div>
-          ))}
-        </div>
       </section>
+      <section className="bagan absolute inset-0 w-full h-screen opacity-0 transition-opacity duration-500  flex items-center justify-center p-0">
+        <img src="/bagan.jpg" alt="Bagan Background" className="object-cover" />
+      </section>
+      <section className="inle h-screen bg-green-700"></section>
     </div>
   );
 }
